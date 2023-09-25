@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component } from "react";
 import PropTypes from 'prop-types';
 import MarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -71,11 +71,17 @@ class CharList extends Component {
     };
 
     renderItems(arr) {
-        const items = arr.map((item) => {
+        const items = arr.map((item, i) => {
             const notAvailableImg = "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
-            const style = (item.thumbnail === notAvailableImg) ? {objectFit: 'unset'} : null;
+            const style = (item.thumbnail === notAvailableImg) ? { objectFit: 'unset' } : null;
             return (
-                <li className="char__item" key={item.id} onClick={() => this.props.onCharSelected(item.id)}>
+                <li
+                    className="char__item"
+                    key={item.id}
+                    tabIndex={0}
+                    onFocus={() => {
+                        this.props.onCharSelected(item.id);
+                    }}>
                     <img src={item.thumbnail} alt={item.name} style={style}/>
                     <div className="char__name">{item.name}</div>
                 </li>

@@ -11,21 +11,14 @@ const useMarvelService = () => {
         return res.data.results.map(_transformChar) 
     }
 
+    const getCharacterByName = async (name) => {
+        const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`)
+        return res.data.results.map(_transformChar)
+    }
+
     const getCharacter = async (id) => {
         const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
         return _transformChar(res.data.results[0]) 
-    }
-
-    const _transformChar = (char) => {
-        return({
-            name: char.name,
-            description: char.description ? `${char.description.slice(0, 210)}...` : "We don't have description for this character yet.",
-            thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
-            detail: char.urls[0].url,
-            wiki: char.urls[1].url,
-            id: char.id,
-            comics: char.comics.items
-        })
     }
 
     const getAllComics = async (offset = 0) => {
@@ -39,6 +32,18 @@ const useMarvelService = () => {
         const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
         return _transformComic(res.data.results[0]);
     };
+
+    const _transformChar = (char) => {
+        return {
+            name: char.name,
+            description: char.description ? `${char.description.slice(0, 210)}...` : "We don't have description for this character yet.",
+            thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
+            detail: char.urls[0].url,
+            wiki: char.urls[1].url,
+            id: char.id,
+            comics: char.comics.items
+        }
+    }
 
     const _transformComic = (com) => {
         return {
@@ -56,7 +61,16 @@ const useMarvelService = () => {
         };
     }
 
-    return { loading, error, clearError, getCharacter, getAllCharacters, getAllComics, getComic };
+    return { 
+        loading, 
+        error, 
+        clearError, 
+        getAllCharacters,
+        getCharacterByName, 
+        getCharacter, 
+        getAllComics, 
+        getComic 
+    };
 }
 
 export default useMarvelService;

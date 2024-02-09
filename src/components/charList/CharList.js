@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
@@ -32,7 +33,7 @@ const CharList = (props) => {
         setCharList(charList => [...charList, ...newCharList]);
         setOffset(offset => offset + 9);
         setNewItemLoading(false);
-        setCharEnded(charEnded => ended)
+        setCharEnded(ended)
     };
 
     function renderItems(arr) {
@@ -40,21 +41,25 @@ const CharList = (props) => {
             const notAvailableImg = "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
             const style = (item.thumbnail === notAvailableImg) ? { objectFit: 'unset' } : null;
             return (
-                <li
-                    className="char__item"
-                    key={item.id}
-                    tabIndex={0}
-                    onFocus={() => {
-                        props.onCharSelected(item.id);
+                <CSSTransition in={true} key={item.id} timeout={5000} classNames="char__item">
+                    <li
+                        className="char__item"
+                        key={item.id}
+                        tabIndex={0}
+                        onFocus={() => {
+                            props.onCharSelected(item.id);
                     }}>
                     <img src={item.thumbnail} alt={item.name} style={style}/>
                     <div className="char__name">{item.name}</div>
                 </li>
+                </CSSTransition>
             )
         })
         return (
             <ul className="char__grid">
-                {items}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import useMarvelService from '../../services/MarvelService';
@@ -10,13 +10,10 @@ const setContent = (process, Component, newItemLoading) => {
     switch (process) {
         case 'waiting':
             return <Spinner />;
-            break;
         case 'loading': 
             return newItemLoading ? <Component /> : <Spinner />;
-            break;
         case 'error':
             return <ErrorMessage />;
-            break
         case 'confirmed': 
             return <Component />
         default:
@@ -56,6 +53,7 @@ const CharList = (props) => {
     };
 
     function renderItems(arr) {
+        console.log('render');
         const items = arr.map((item, i) => {
             const notAvailableImg = "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
             const style = (item.thumbnail === notAvailableImg) ? { objectFit: 'unset' } : null;
@@ -83,9 +81,13 @@ const CharList = (props) => {
         )
     }
 
+    const elements = useMemo(() => {
+        return setContent(process, () => renderItems(charList), newItemLoading)
+    }, [process])
+
     return (
         <div className="char__list">
-            {setContent(process, () => renderItems(charList), newItemLoading)}
+            {elements}
             <button 
                 className="button button__main button__long"
                 disabled={newItemLoading}
